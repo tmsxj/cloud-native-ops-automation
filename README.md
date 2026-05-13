@@ -37,6 +37,6 @@ git clone https://github.com/tmsxj/cloud-native-ops-automation.git
 cd cloud-native-ops-automation
 ```
 📧 联系方式
-📧 邮箱：你的邮箱地址（换成你自己的）
+📧 邮箱：tmsxj.zjx@gmail.com
 💻 GitHub：https://github.com/tmsxj
 📍 位置：深圳，China
