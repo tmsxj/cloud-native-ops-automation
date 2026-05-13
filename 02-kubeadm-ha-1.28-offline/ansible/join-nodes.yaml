@@ -1,0 +1,39 @@
+---
+- name: 加入 Worker 节点到集群
+  hosts: worker
+  become: true
+  vars:
+    token: "{{ lookup('env', 'KUBEADM_TOKEN') }}"
+    hash: "{{ lookup('env', 'KUBEADM_HASH') }}"
+  tasks:
+    - name: 重置 kubeadm 配置
+      command: kubeadm reset -f
+      ignore_errors: yes
+
+    - name: 清理残留文件
+      file:
+        path: "{{ item }}"
+        state: absent
+      loop:
+        - /etc/kubernetes
+        - /var/lib/etcd
+        - /var/lib/kubelet
+        - ~/.kube
+
+    - name: 清理 iptables 规则
+      command: "{{ item }}"
+      loop:
+        - iptables -F
+        - iptables -t nat -F
+        - iptables -t mangle -F
+
+    - name: 加入集群
+      command: >
+        kubeadm join 192.168.1.51:6443
+        --token {{ token }}
+        --discovery-token-ca-cert-hash sha256:{{ hash }}
+      register: join_result
+
+    - name: 显示加入结果
+      debug:
+        var: join_result.stdout
