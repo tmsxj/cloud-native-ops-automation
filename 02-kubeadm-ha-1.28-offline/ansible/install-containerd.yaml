@@ -1,0 +1,42 @@
+---
+- name: 安装 containerd 并配置使用 Harbor
+  hosts: k8s
+  become: true
+  tasks:
+    - name: 修改 sandbox_image 指向 Harbor
+      replace:
+        path: /etc/containerd/config.toml
+        regexp: 'sandbox_image = ".*"'
+        replace: 'sandbox_image = "192.168.1.61/registry.k8s.io/pause:3.9"'
+
+    - name: 设置 SystemdCgroup = true
+      replace:
+        path: /etc/containerd/config.toml
+        regexp: 'SystemdCgroup = false'
+        replace: 'SystemdCgroup = true'
+
+    - name: 设置 registry config_path
+      replace:
+        path: /etc/containerd/config.toml
+        regexp: 'config_path = ""'
+        replace: 'config_path = "/etc/containerd/certs.d"'
+
+    - name: 创建 Harbor certs 目录
+      file:
+        path: /etc/containerd/certs.d/192.168.1.61
+        state: directory
+
+    - name: 创建 hosts.toml 配置
+      copy:
+        content: |
+          server = "http://192.168.1.61"
+
+          [host."http://192.168.1.61"]
+            capabilities = ["pull", "resolve"]
+        dest: /etc/containerd/certs.d/192.168.1.61/hosts.toml
+
+    - name: 重启 containerd 服务
+      systemd:
+        name: containerd
+        state: restarted
+        enabled: yes

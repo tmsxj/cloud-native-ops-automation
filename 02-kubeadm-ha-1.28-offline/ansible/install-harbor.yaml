@@ -1,0 +1,67 @@
+---
+- name: 安装 Harbor
+  hosts: harbor
+  become: true
+  tasks:
+    - name: 添加 Docker GPG 密钥
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+
+    - name: 添加 Docker 仓库
+      apt_repository:
+        repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable
+        state: present
+
+    - name: 安装 Docker
+      apt:
+        name:
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+        state: present
+
+    - name: 启动 Docker
+      systemd:
+        name: docker
+        state: started
+        enabled: yes
+
+    - name: 创建 Harbor 目录
+      file:
+        path: /data/harbor
+        state: directory
+
+    - name: 下载 Harbor 安装包
+      get_url:
+        url: https://github.com/goharbor/harbor/releases/download/v2.9.0/harbor-offline-installer-v2.9.0.tgz
+        dest: /data/harbor/harbor-offline-installer-v2.9.0.tgz
+
+    - name: 解压 Harbor 安装包
+      unarchive:
+        src: /data/harbor/harbor-offline-installer-v2.9.0.tgz
+        dest: /data/harbor
+        remote_src: yes
+        extra_opts:
+          - --strip-components=1
+
+    - name: 复制 Harbor 配置模板
+      copy:
+        src: /data/harbor/harbor.yml.tmpl
+        dest: /data/harbor/harbor.yml
+        remote_src: yes
+
+    - name: 修改 Harbor 配置
+      replace:
+        path: /data/harbor/harbor.yml
+        regexp: "{{ item.regexp }}"
+        replace: "{{ item.replace }}"
+      loop:
+        - { regexp: 'hostname: reg.mydomain.com', replace: 'hostname: 192.168.1.61' }
+        - { regexp: 'port: 443', replace: '# port: 443' }
+        - { regexp: 'harbor_admin_password: Harbor12345', replace: 'harbor_admin_password: Harbor12345' }
+
+    - name: 安装 Harbor
+      command: ./install.sh
+      args:
+        chdir: /data/harbor
