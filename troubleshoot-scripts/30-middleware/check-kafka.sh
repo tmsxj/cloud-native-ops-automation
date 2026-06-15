@@ -59,7 +59,7 @@ run_kafka_cmd() {
 
 # ==================== 1. 检查Broker连通性 ====================
 print_info "1. 检查Kafka Broker连通性..."
-print_separator"
+print_separator
 
 # 通过列出Topic来测试Broker连通性
 TOPIC_LIST=$(run_kafka_cmd kafka-topics.sh --list)
@@ -133,7 +133,7 @@ fi
 # ==================== 3. 检查消费者组与消息堆积 ====================
 print_info ""
 print_info "3. 检查消费者组与消息堆积..."
-print_separator"
+print_separator
 
 # 获取所有消费者组
 CONSUMER_GROUPS=$(run_kafka_cmd kafka-consumer-groups.sh --list)
@@ -226,7 +226,7 @@ fi
 # ==================== 4. 检查Topic分区副本 ====================
 print_info ""
 print_info "4. 检查Topic分区与副本..."
-print_separator"
+print_separator
 
 # 获取Topic详情（检查前10个Topic）
 PARTITION_ISSUES=0
@@ -264,7 +264,7 @@ fi
 # ==================== 5. 检查Broker磁盘使用 ====================
 print_info ""
 print_info "5. 检查Broker磁盘使用情况..."
-print_separator"
+print_separator
 
 # Kafka日志目录（默认）
 KAFKA_LOG_DIR="${KAFKA_LOG_DIR:-/var/lib/kafka/logs}"
@@ -314,7 +314,7 @@ fi
 # ==================== 6. 检查网络连接 ====================
 print_info ""
 print_info "6. 检查Broker网络连接..."
-print_separator"
+print_separator
 
 BROKER_HOST=$(echo "$BOOTSTRAP_SERVER" | cut -d: -f1)
 BROKER_PORT=$(echo "$BOOTSTRAP_SERVER" | cut -d: -f2)
@@ -345,7 +345,7 @@ fi
 # ==================== 7. 检查JMX/进程状态 ====================
 print_info ""
 print_info "7. 检查Kafka进程状态..."
-print_separator"
+print_separator
 
 KAFKA_PID=$(pgrep -f "kafka.Kafka" 2>/dev/null | head -1)
 

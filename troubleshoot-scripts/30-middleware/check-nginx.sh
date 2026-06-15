@@ -34,7 +34,7 @@ print_separator() {
 
 # ==================== 1. 检查Nginx进程状态 ====================
 print_info "1. 检查Nginx进程状态..."
-print_separator"
+print_separator
 
 # 检查Nginx进程
 NGINX_MASTER_PID=$(pgrep -x "nginx" 2>/dev/null | head -1)
@@ -80,7 +80,7 @@ fi
 # ==================== 2. 检查Nginx配置 ====================
 print_info ""
 print_info "2. 检查Nginx配置..."
-print_separator"
+print_separator
 
 # 测试配置语法
 NGINX_TEST=$(nginx -t 2>&1)
@@ -135,7 +135,7 @@ fi
 # ==================== 3. 检查错误日志(502/504) ====================
 print_info ""
 print_info "3. 检查错误日志(502/504)..."
-print_separator"
+print_separator
 
 if [ -f "$ERROR_LOG" ]; then
     # 获取最近1小时的错误日志
@@ -206,7 +206,7 @@ fi
 # ==================== 4. 检查连接数 ====================
 print_info ""
 print_info "4. 检查Nginx连接数..."
-print_separator"
+print_separator
 
 # 检查80端口连接
 CONN_80=$(ss -ant 2>/dev/null | grep -c ":80 " || netstat -ant 2>/dev/null | grep -c ":80 " || echo "0")
@@ -255,7 +255,7 @@ fi
 # ==================== 5. 检查后端健康状态 ====================
 print_info ""
 print_info "5. 检查后端服务健康状态..."
-print_separator"
+print_separator
 
 # 从Nginx配置中提取upstream后端地址
 if [ -f "$NGINX_CONF" ]; then
@@ -311,7 +311,7 @@ fi
 # ==================== 6. 检查系统限制 ====================
 print_info ""
 print_info "6. 检查系统资源限制..."
-print_separator"
+print_separator
 
 # 检查文件描述符限制
 NOFILE_LIMIT=$(ulimit -n 2>/dev/null)
@@ -370,7 +370,7 @@ fi
 # ==================== 7. 检查访问日志统计 ====================
 print_info ""
 print_info "7. 检查访问日志统计..."
-print_separator"
+print_separator
 
 if [ -f "$ACCESS_LOG" ]; then
     # 最近1小时请求量
@@ -414,7 +414,7 @@ fi
 # ==================== 8. 检查Nginx性能指标 ====================
 print_info ""
 print_info "8. 检查Nginx性能指标..."
-print_separator"
+print_separator
 
 # 检查stub_status（如果配置了）
 STATUS_URL=$(grep -r "stub_status" "$NGINX_CONF" /etc/nginx/conf.d/ 2>/dev/null | grep "location" -A2 | grep -oP 'listen\s+\K[0-9]+' | head -1)

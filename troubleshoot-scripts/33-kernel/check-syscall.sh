@@ -69,9 +69,7 @@ if [ -n "$TARGET_PID" ]; then
         echo ""
         # 分析高频系统调用
         print_info "高频系统调用分析:"
-        STRACE_TOP=$(echo "$STRACE_RESULT" | grep -v "^strace:" | awk 'NR>2 && $1 !~ /total|---/' {
-            if ($1+0 > 0) print $1, $6
-        }' | sort -rn | head -5)
+        STRACE_TOP=$(echo "$STRACE_RESULT" | grep -v "^strace:" | awk 'NR>2 && $1 !~ /total|---/ { if ($1+0 > 0) print $1, $6 }' | sort -rn | head -5)
 
         if [ -n "$STRACE_TOP" ]; then
             echo "$STRACE_TOP" | while read count syscall; do

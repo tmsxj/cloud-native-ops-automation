@@ -227,7 +227,7 @@ fi
 # ==================== 6. 检查索引状态 ====================
 print_info ""
 print_info "6. 检查索引状态..."
-print_separator"
+print_separator
 
 # 获取索引列表及状态
 INDICES_INFO=$(curl -s "${ES_URL}/_cat/indices?v&h=health,status,index,pri,rep,docs.count,store.size&health=red,yellow" 2>/dev/null)
@@ -261,7 +261,7 @@ fi
 # ==================== 7. 检查慢日志 ====================
 print_info ""
 print_info "7. 检查索引慢查询日志..."
-print_separator"
+print_separator
 
 SLOWLOG_QUERY=$(curl -s "${ES_URL}/_cat/indices?v&h=index" 2>/dev/null | awk 'NR>1 {print $1}' | head -3)
 
